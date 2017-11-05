@@ -37,13 +37,15 @@
 /*global jQuery*/
 
 var spa = (function ($) {
-    var configMap = {
+    var 
+    configMap = {
         extended_height: 434,
         extended_title: 'Kliknij, aby ukryć',
         retracted_height: 16,
         retracted_title: 'Kliknij, aby pokazać',
         template_html: '<div class="spa-slider"><\/div>'
-    }, $chatSlider, toggleSlider, onClickSlider, initModule;
+    },
+    $chatSlider, toggleSlider, onClickSlider, initModule;
 
     toggleSlider = function() {
         var slider_height = $chatSlider.height();
@@ -62,10 +64,12 @@ var spa = (function ($) {
         }
         return false;
     };
+    
     onClickSlider = function(event) {
         toggleSlider();
         return false;
     };
+
     initModule = function($container) {
         $container.html(configMap.template_html);
         $chatSlider = $container.find('.spa-slider');
@@ -83,10 +87,8 @@ jQuery(document).ready(
         spa.initModule(jQuery('#spa'));
     }
 )
-
-
-
-</script>
+        
+    </script>
 </head>
 <body>
     <div id="spa">

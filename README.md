@@ -1,2 +1,4 @@
 # Single-Page-Application
-Single Page Application based on MIchael M.&amp;Josh P. book. 
+
+Application based on book:
+Michael Mikowski&Josh Powell - Single Page Web Application
