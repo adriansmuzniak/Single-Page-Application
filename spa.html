@@ -1,98 +1,25 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Aplikacje SPA, rozdział I.. punkt 1.2.2</title>
-    <style type="text/css">
-    body {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background-color: #777;
-    }
-    #spa {
-        position: absolute;
-        top: 8px;
-        bottom: 8px;
-        right: 8px;
-        left: 8px;
-        border-radius: 8px 8px 0 8px;
-        background-color: #fff;
-    }
-    .spa-slider {
-        position: absolute;
-        bottom: 0;
-        right: 2px;
-        width: 300px;
-        height: 16px;
-        cursor: pointer;
-        border-radius: 8px 0 0 0;
-        background-color: #f00;
-    }
-    </style>
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-<script type="text/javascript">
-/*Ustawienia JSLint*/
-/*jslint browser : true, continue : true, devel : true, indent : 2, maxerr : 50, newcap : true, nomen : true, plusplus : true, regexp : true, sloppy : true, vars : true, white : true
-*/
-/*global jQuery*/
+    <title>Starter SPA</title>
+  
+    <!--Arkusze stylów-->
+    <link rel="stylesheet" href="css/spa.css" type="text/css" />
+    <link rel="stylesheet" href="css/spa.shell.css" type="text/css" />
 
-var spa = (function ($) {
-    var 
-    configMap = {
-        extended_height: 434,
-        extended_title: 'Kliknij, aby ukryć',
-        retracted_height: 16,
-        retracted_title: 'Kliknij, aby pokazać',
-        template_html: '<div class="spa-slider"><\/div>'
-    },
-    $chatSlider, toggleSlider, onClickSlider, initModule;
+    <!--Zewnętrzny kod JavaScript-->
+    <script src="js/jq/jquery-3.2.1.js"></script>
+    <script src="js/jq/jquery.uriAnchor-1.3.3.js"></script>
 
-    toggleSlider = function() {
-        var slider_height = $chatSlider.height();
-
-        if (slider_height === configMap.retracted_height) {
-            $chatSlider
-            .animate({height: configMap.extended_height})
-            .attr('tytuł', configMap.extended_title);
-            return true;
-        }
-        else if (slider_height === configMap.extended_height) {
-            $chatSlider
-            .animate({height: configMap.retracted_height})
-            .attr('tytuł', configMap.retracted_title); 
-            return true; 
-        }
-        return false;
-    };
-    
-    onClickSlider = function(event) {
-        toggleSlider();
-        return false;
-    };
-
-    initModule = function($container) {
-        $container.html(configMap.template_html);
-        $chatSlider = $container.find('.spa-slider');
-        $chatSlider
-        .attr('tytuł', configMap.retracted_title)
-        .click(onClickSlider);
-        return true;
-    };
-
-    return {initModule:initModule};
-}(jQuery));
-
-jQuery(document).ready(
-    function(){
-        spa.initModule(jQuery('#spa'));
-    }
-)
-        
+    <!--Nasz kod JavaScript-->
+    <script src="js/spa.js"></script>
+    <script src="js/spa.shell.js"></script>
+    <script>
+    $(function(){spa.initModule($("#spa")); });
     </script>
+
 </head>
 <body>
-    <div id="spa">
-        <div class="spa-slider"></div>
-    </div>
+    <div id="spa"></div>
 </body>
 </html>
