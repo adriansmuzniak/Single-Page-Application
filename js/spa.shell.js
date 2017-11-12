@@ -45,4 +45,18 @@ setJqueryMap = function() {
 };
 //Zakończenie metody DOM /setJqueryMap/
 //--------ZAKOŃCZENIE SEKCJI METOD DOM--------------------------------
-})
+
+//--------ROZPOCZĘCIE SEKCJI PROCEDUR OBSŁUGI ZDARZEŃ-----------------
+//--------ZAKOŃCZENIE SEKCJI PROCEDUR OBŁSUGI ZDARZEŃ-----------------
+
+//--------ROZPOCZĘCIE SEKCJI METOD PUBLICZNYCH------------------------
+//Rozpoczęcie metody publicznej /initModule/.
+initModule = function($container) {
+    stateMap.$container = $container;
+    $container.html(configMap.main_html);
+    setJqueryMap();
+};
+//Zakończenie metody publicznej /initModule/.
+return {initModule:initModule};
+//--------ZAKOŃCZENIE SEKCJI METOD PUBLICZNYCH------------------------
+}());
