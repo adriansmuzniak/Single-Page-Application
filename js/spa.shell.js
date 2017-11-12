@@ -29,8 +29,7 @@ var configMap = {
     + '<div class="spa-shell-modal"></div>'
 },
 stateMap = { $container: null},
-jqueryMap = {};
-
+jqueryMap = {}, 
 setJqueryMap, initModule;
 //--------ZAKOŃCZENIE SEKCJI ZMIENNYCH ZAKRESU MODUŁU----------------
 
@@ -41,7 +40,7 @@ setJqueryMap, initModule;
 //Rozpoczęcie metody DOM /setJqueryMap/.
 setJqueryMap = function() {
     var container = stateMap.$container;
-    jqueryMap = {$container:$container};
+    jqueryMap = {$container: $container};
 };
 //Zakończenie metody DOM /setJqueryMap/
 //--------ZAKOŃCZENIE SEKCJI METOD DOM--------------------------------
