@@ -3,23 +3,23 @@
 *Moduł głównej przestrzeni nazw.
 */
 
-/*jslint browser : true, continue : true,
+/* jslint browser : true, continue : true,
         devel : true, indent : 2, maxerr : 50,
         newcap : true, nomen : true, plusplus : true,
         regexp : true, sloppy : true, varse : false,
         white : true,
 */
-/*global $. spa*/ 
+/* global $. spa */
 
-var spa = (function() {
-	var initModule = function($container) {
-		spa.shell.initModule($container);
-		};
-	return {initModule:initModule};
+var spa = (function () {
+  const initModule = function ($container) {
+    spa.shell.initModule($container);
+  };
+  return { initModule };
 }());
 
-var main_html = String()
-	+	'<div class="spa-shell-head">'
+const main_html = `${String()
+}<div class="spa-shell-head">`
 	+		'<div class="spa-shell-head-logo"></div>'
 	+		'<div class="spa-shell-head-acct"></div>'
 	+		'<div class="spa-shell-head-search"></div>'
@@ -30,4 +30,4 @@ var main_html = String()
 	+	'</div>'
 	+	'<div class="spa-shell-foot"></div>'
 	+	'<div class="spa-shell-chat"></div>'
-	+	'<div class="spa-shell-modal"></div>'
+	+	'<div class="spa-shell-modal"></div>';
