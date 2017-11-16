@@ -26,11 +26,15 @@ spa.shell = (function() {
     + '</div>'
     + '<div class="spa-shell-foot"></div>'
     + '<div class="spa-shell-chat"></div>'
-    + '<div class="spa-shell-modal"></div>'
+    + '<div class="spa-shell-modal"></div>',
+    chat_extend_time: 1000,
+    chat_retract_time: 300,
+    chat_extend_height: 450,
+    chat_retract_height: 15
     },
     stateMap = { $container: null },
     jqueryMap = {},
-    setJqueryMap, initModule;
+    setJqueryMap, toggleChat, initModule;
   // --------ZAKOŃCZENIE SEKCJI ZMIENNYCH ZAKRESU MODUŁU----------------
 
   // --------ROZPOCZĘCIE SEKCJI METOD NARZĘDZIOWYCH-----------------
@@ -41,8 +45,62 @@ spa.shell = (function() {
   setJqueryMap = function() {
     var container = stateMap.$container;
     jqueryMap = { $container: $container };
+
+    jqueryMap = {
+      $container: $container,
+      $chat: $container.find('spa-shell-chat')
+    };
   };
   // Zakończenie metody DOM /setJqueryMap/
+  // Rozpoczęcie metody DOM /toggleChat/.
+  // Cel: wysuwanie i chowanie suwaka czatu.
+  // Argumenty:
+  // do_extend - jeśli prawda (true) wysuwa suwak, jeśli fałsz (false), chowa;
+  // *callback (wywołanie zwrotne) - opcjonalna funkcja do wykonywania na zakończenie animacji.
+  // Ustawienia:
+  // *chat_extended_time, chat_retract_time,
+  // *chat_extend_height, chat_retract_height,
+  // Zwraca wartość logiczną (boolean):
+  // *true - aktywacja suwaka aktywowana;
+  // *false - animacja suwaka nieaktywowana.
+  //
+  toggleChat = function ( do_extend, callback ) {
+    var px_chat_ht = jqueryMap.$chat.height(),
+    is_open = px_chat_ht === configMap.chat_extend_height,
+    is_closed = px_chat_ht === configMap.chat_retract_height,
+    is_sliding = !is_open && !is_closed;
+
+    // Unikanie sytuacji wyścigu
+    if ( is_sliding ) {
+      return false;
+    };
+
+    // Rozpoczęcie rozwijania suwaka czatu.
+    if ( do_extend ) {
+      jqueryMap.$chat.animate(
+        { height: configMap.chat_extend_height },
+        configMap.chat_extend_time,
+        function () {
+          if ( callback ) { callback( jqueryMap.$chat); }
+        }
+      );
+      return true;
+    }
+    // Zakończenie rozwijania suwaka czatu.
+
+    // Rozpoczęcie zwijania suwaka czatu.
+    jqueryMap.$chat.animate(
+      { height: configMap.chat_retract_time },
+      configMap.chat_retract_time,
+      function () {
+        if ( callback ) { callback( jqueryMap.$chat); }
+      }
+    );
+    return true;
+    // Zakończenie zwijania suwaka czatu.
+    
+  };
+  // Zakończenie metody DOM /toggleChat/.
   // --------ZAKOŃCZENIE SEKCJI METOD DOM--------------------------------
 
   // --------ROZPOCZĘCIE SEKCJI PROCEDUR OBSŁUGI ZDARZEŃ-----------------
