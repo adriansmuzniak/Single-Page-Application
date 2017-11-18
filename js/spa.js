@@ -12,14 +12,14 @@
 /* global $. spa */
 
 var spa = (function () {
-  const initModule = function ($container) {
-    spa.shell.initModule($container);
+  var initModule = function ($container) {
+    spa.shell.initModule( $container );
   };
   return { initModule };
 }());
 
-const main_html = `${String()
-}<div class="spa-shell-head">`
+var main_html = String()
+	+	`<div class="spa-shell-head">`
 	+		'<div class="spa-shell-head-logo"></div>'
 	+		'<div class="spa-shell-head-acct"></div>'
 	+		'<div class="spa-shell-head-search"></div>'

@@ -12,6 +12,7 @@
 /* global $. spa */
 
 spa.shell = (function() {
+
 // ---------ROZPOCZĘCIE SEKCJI ZMIENNYCH ZAKRESU MODUŁU-----------------
   var configMap = {
       main_html: String()
@@ -31,27 +32,31 @@ spa.shell = (function() {
     chat_retract_time: 300,
     chat_extend_height: 450,
     chat_retract_height: 15
-    },
+    },  
     stateMap = { $container: null },
     jqueryMap = {},
+
     setJqueryMap, toggleChat, initModule;
+
   // --------ZAKOŃCZENIE SEKCJI ZMIENNYCH ZAKRESU MODUŁU----------------
 
   // --------ROZPOCZĘCIE SEKCJI METOD NARZĘDZIOWYCH-----------------
   // --------ZAKOŃCZENIE SEKCJI METOD NARZĘDZIOWYCH-----------------
 
   // --------ROZPOCZĘCIE SEKCJI METOD DOM-------------------------------
+
   // Rozpoczęcie metody DOM /setJqueryMap/.
   setJqueryMap = function() {
-    var container = stateMap.$container;
+    var $container = stateMap.$container;
     jqueryMap = { $container: $container };
 
     jqueryMap = {
       $container: $container,
-      $chat: $container.find('spa-shell-chat')
+      $chat: $container.find('.spa-shell-chat')
     };
   };
   // Zakończenie metody DOM /setJqueryMap/
+
   // Rozpoczęcie metody DOM /toggleChat/.
   // Cel: wysuwanie i chowanie suwaka czatu.
   // Argumenty:
@@ -65,11 +70,11 @@ spa.shell = (function() {
   // *false - animacja suwaka nieaktywowana.
   //
   toggleChat = function ( do_extend, callback ) {
-    var px_chat_ht = jqueryMap.$chat.height(),
-    is_open = px_chat_ht === configMap.chat_extend_height,
-    is_closed = px_chat_ht === configMap.chat_retract_height,
+    var px_chat_ht = jqueryMap.$chat.height();
+    is_open = px_chat_ht === configMap.chat_extend_height;
+    is_closed = px_chat_ht === configMap.chat_retract_height;
     is_sliding = !is_open && !is_closed;
-
+   
     // Unikanie sytuacji wyścigu
     if ( is_sliding ) {
       return false;
@@ -77,10 +82,9 @@ spa.shell = (function() {
 
     // Rozpoczęcie rozwijania suwaka czatu.
     if ( do_extend ) {
-      jqueryMap.$chat.animate(
-        { height: configMap.chat_extend_height },
-        configMap.chat_extend_time,
-        function () {
+      jqueryMap.$chat.animate({ height: configMap.chat_extend_height},
+        configMap.chat_extend_time, 
+        function() {
           if ( callback ) { callback( jqueryMap.$chat); }
         }
       );
@@ -89,16 +93,18 @@ spa.shell = (function() {
     // Zakończenie rozwijania suwaka czatu.
 
     // Rozpoczęcie zwijania suwaka czatu.
-    jqueryMap.$chat.animate(
-      { height: configMap.chat_retract_time },
-      configMap.chat_retract_time,
-      function () {
-        if ( callback ) { callback( jqueryMap.$chat); }
+     if ( do_extend == false ) {
+
+       jqueryMap.$chat.animate(
+         { height: configMap.chat_retract_height },
+         configMap.chat_retract_time,
+         function () {
+           if ( callback ) { callback( jqueryMap.$chat); }
+          }
+        );
+        return true;
       }
-    );
-    return true;
     // Zakończenie zwijania suwaka czatu.
-    
   };
   // Zakończenie metody DOM /toggleChat/.
   // --------ZAKOŃCZENIE SEKCJI METOD DOM--------------------------------
@@ -107,11 +113,17 @@ spa.shell = (function() {
   // --------ZAKOŃCZENIE SEKCJI PROCEDUR OBŁSUGI ZDARZEŃ-----------------
 
   // --------ROZPOCZĘCIE SEKCJI METOD PUBLICZNYCH------------------------
+
   // Rozpoczęcie metody publicznej /initModule/.
-  initModule = function($container) {
+  initModule = function ( $container ) {
+    //Ładowanie HTML i mapowanie kolekcji jQuery.
     stateMap.$container = $container;
-    $container.html(configMap.main_html);
+    $container.html( configMap.main_html );
     setJqueryMap();
+
+    // Testowanie przełączania.
+    setTimeout(function () {toggleChat(true);}, 3000);
+    setTimeout(function () {toggleChat(false);}, 8000);
   };
   // Zakończenie metody publicznej /initModule/.
   return { initModule: initModule };
