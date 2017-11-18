@@ -28,15 +28,20 @@ spa.shell = (function() {
     + '<div class="spa-shell-foot"></div>'
     + '<div class="spa-shell-chat"></div>'
     + '<div class="spa-shell-modal"></div>',
-    chat_extend_time: 1000,
+    chat_extend_time: 250,
     chat_retract_time: 300,
     chat_extend_height: 450,
-    chat_retract_height: 15
+    chat_retract_height: 15,
+    chat_extended_title: "Kliknij, aby ukryć",
+    chat_retracted_title: "Kliknij, aby pokazać"
     },  
-    stateMap = { $container: null },
+    stateMap = { 
+      $container: null,
+      is_chat_retracted: true
+     },
     jqueryMap = {},
 
-    setJqueryMap, toggleChat, initModule;
+    setJqueryMap, toggleChat, onClickChat, initModule;
 
   // --------ZAKOŃCZENIE SEKCJI ZMIENNYCH ZAKRESU MODUŁU----------------
 
@@ -59,6 +64,11 @@ spa.shell = (function() {
 
   // Rozpoczęcie metody DOM /toggleChat/.
   // Cel: wysuwanie i chowanie suwaka czatu.
+
+  //Stan: konfiguruje stateMap.is_chat_retracted;
+  // *true - suwak jest zwinięty;
+  // *false - suwak jest rozwinięty;
+  
   // Argumenty:
   // do_extend - jeśli prawda (true) wysuwa suwak, jeśli fałsz (false), chowa;
   // *callback (wywołanie zwrotne) - opcjonalna funkcja do wykonywania na zakończenie animacji.
@@ -85,6 +95,10 @@ spa.shell = (function() {
       jqueryMap.$chat.animate({ height: configMap.chat_extend_height},
         configMap.chat_extend_time, 
         function() {
+          jqueryMap.$chat.attr(
+            'tytuł', configMap.chat_extended_title
+          );
+          stateMap.is_chat_retracted = false;
           if ( callback ) { callback( jqueryMap.$chat); }
         }
       );
@@ -93,23 +107,28 @@ spa.shell = (function() {
     // Zakończenie rozwijania suwaka czatu.
 
     // Rozpoczęcie zwijania suwaka czatu.
-     if ( do_extend == false ) {
-
        jqueryMap.$chat.animate(
          { height: configMap.chat_retract_height },
          configMap.chat_retract_time,
          function () {
+           jqueryMap.$chat.attr(
+             'tytuł', configMap.chat_retracted_title
+           );
+           stateMap.is_chat_retracted = true;
            if ( callback ) { callback( jqueryMap.$chat); }
           }
         );
         return true;
-      }
     // Zakończenie zwijania suwaka czatu.
   };
   // Zakończenie metody DOM /toggleChat/.
   // --------ZAKOŃCZENIE SEKCJI METOD DOM--------------------------------
 
   // --------ROZPOCZĘCIE SEKCJI PROCEDUR OBSŁUGI ZDARZEŃ-----------------
+  onClickChat = function ( event ) {
+    toggleChat( stateMap.is_chat_retracted );
+    return false;
+  }
   // --------ZAKOŃCZENIE SEKCJI PROCEDUR OBŁSUGI ZDARZEŃ-----------------
 
   // --------ROZPOCZĘCIE SEKCJI METOD PUBLICZNYCH------------------------
@@ -121,9 +140,14 @@ spa.shell = (function() {
     $container.html( configMap.main_html );
     setJqueryMap();
 
+    stateMap.is_chat_retracted = true;
+    jqueryMap.$chat
+      .attr( 'tytuł', configMap.chat_retracted_title )
+      .click( onClickChat );
+
     // Testowanie przełączania.
-    setTimeout(function () {toggleChat(true);}, 3000);
-    setTimeout(function () {toggleChat(false);}, 8000);
+    // setTimeout(function () {toggleChat(true);}, 3000);
+    // setTimeout(function () {toggleChat(false);}, 8000);
   };
   // Zakończenie metody publicznej /initModule/.
   return { initModule: initModule };
