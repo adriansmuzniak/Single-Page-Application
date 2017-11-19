@@ -15,6 +15,9 @@ spa.shell = (function() {
 
 // ---------ROZPOCZĘCIE SEKCJI ZMIENNYCH ZAKRESU MODUŁU-----------------
   var configMap = {
+      anchor_schema_map: {
+        chat: { open: true, closed: true }
+      },
       main_html: String()
     + '<div class="spa-shell-head">'
      + '<div class="spa-shell-head-logo"></div>'
@@ -37,15 +40,21 @@ spa.shell = (function() {
     },  
     stateMap = { 
       $container: null,
+      anchor_map: {},
       is_chat_retracted: true
      },
     jqueryMap = {},
 
-    setJqueryMap, toggleChat, onClickChat, initModule;
+    copyAnchorMap, setJqueryMap, toggleChat, changeAnchorPart, onHashChange,
+    onClickChat, initModule;
 
   // --------ZAKOŃCZENIE SEKCJI ZMIENNYCH ZAKRESU MODUŁU----------------
 
   // --------ROZPOCZĘCIE SEKCJI METOD NARZĘDZIOWYCH-----------------
+  // Zwraca kopię przechowywanej mapy kotwicy; minimalizuje narzut.
+  copyAnchorMap = function () {
+    return $.extend( true, {}, stateMap.anchor_map);
+  };
   // --------ZAKOŃCZENIE SEKCJI METOD NARZĘDZIOWYCH-----------------
 
   // --------ROZPOCZĘCIE SEKCJI METOD DOM-------------------------------
@@ -122,11 +131,73 @@ spa.shell = (function() {
     // Zakończenie zwijania suwaka czatu.
   };
   // Zakończenie metody DOM /toggleChat/.
+
+  // Rozpoczęcie metody DOM /changeAnchorPart/.
+  // Cel: zmiania części komponentu kotwicy URI.
+  // Argumenty:
+  // *arg_map - mapa opisująca, którą część kotwicy URI chcemy zmienić.
+  // Zwraca: wartość logiczną boolean;
+  // * true - część kotwicy adresu URI została zaktualizowana;
+  // * false - części kotwicy adresu URI nie mogła zostać zaktualizowana:
+  // Akcja:
+  // bieżąca reprezentacja kotwicy przechowywana w stateMap.anchor_map;
+  // Ta metoda:
+  // *tworzy kopię mapy za pomocą metody copyAnchor();
+  // *modyfikuje wartość kluczy za pomocą arg_map;
+  // *zarządza rozróżnianiem pomiędzy niezależnymi i zależnymi
+  // wartościami w kodowaniu;
+  // *próbuje zmienić adres URI za pomocą uriAnchor;
+  // *zwraca true w przypadku powodzenia oraz false jeżeli operacja się nie powiedzie.
+  //
+  changeAnchorPart = function ( arg_map ) {
+    var anchor_map_revise = copyAnchorMap(),
+        bool_return = true,
+        key_name, key_name_dep;
+
+  // Rozpoczęcie wprowadzania zmian w mapie kotwicy.
+    KEYVAL:
+    for ( key_name in arg_map ) {
+      if ( arg_map.hasOwnProperty( key_name )) {
+
+      // Przeskakiwanie zależnych kluczy podczas iteracji.
+        if ( key_name.indexOf( '_' ) === 0 ) { continue KEYVAL; }
+
+      // Aktualizacja niezależnej wartości klucza.
+        anchor_map_revise[key_name] = arg_map[key_name];
+
+        // Aktualizacja odpowiadającego klucza zależnego.
+        key_name_dep = "_" + key_name;
+        if ( arg_map[key_name_dep] ) {
+          anchor_map_revise[key_name_dep] = arg_map[key_name_dep]
+        }
+      }
+    }
+  // Zakończenie wprowadzania zmian w mapie kotwicy.
+
+  // Rozpoczęcie próby aktualizacji URI;
+  // przywrócenie poprzedniego w przypadku niepowodzenia.
+    try {
+      $.uriAnchor.setAnchor( anchor_map_revise );
+    }
+    catch ( error ) {
+    // Zastąpienie adresu URI stanem obecnym.
+      $.uriAnchor.setAnchor( stateMap.anchor_map, null, true );
+      bool_return = false;
+    }
+  // Zakończenie próby aktualizacji adresu URI...
+    return bool_return; 
+  };
+  // Zakończenie metody DOM /changeAnchorPart/.
   // --------ZAKOŃCZENIE SEKCJI METOD DOM--------------------------------
 
   // --------ROZPOCZĘCIE SEKCJI PROCEDUR OBSŁUGI ZDARZEŃ-----------------
+  // Rozpoczęcie procedury obsługi zdarzęń /onHashChange/.
   onClickChat = function ( event ) {
-    toggleChat( stateMap.is_chat_retracted );
+   if ( toggleChat( stateMap.is_chat_retracted ) ) {
+     $.uriAnchor.setAnchor({
+       chat: ( stateMap.is_chat_retracted ? 'open' : 'closed' )
+     });
+   }
     return false;
   }
   // --------ZAKOŃCZENIE SEKCJI PROCEDUR OBŁSUGI ZDARZEŃ-----------------
