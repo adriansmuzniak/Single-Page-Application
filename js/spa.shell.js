@@ -192,6 +192,61 @@ spa.shell = (function() {
 
   // --------ROZPOCZĘCIE SEKCJI PROCEDUR OBSŁUGI ZDARZEŃ-----------------
   // Rozpoczęcie procedury obsługi zdarzęń /onHashChange/.
+  // Cel: obsługa zdarzenia hashChange.
+  // Argumenty:
+  // * event - obiekt zdarzeń jQuery.
+  // Ustawienia: brak.
+  // Zwraca: false,
+  // Akcja:
+  // *parsuje komponent kotwicy adresu URI;
+  // *porównuje zaproponowany stan aplikacji ze stanem bieżącym;
+  // *dostosowuje aplikację tylko wtedy, kiedy proponowany stan 
+  // różni się od istniejącego.
+  //
+  onHashChange = function ( event ) {
+    var anchor_map_previous = copyAnchorMap(),
+    anchor_map_proposed,
+    _s_chat_previous, _s_chat_proposed,
+    s_chat_proposed;
+
+  // Próba parsowania kotwicy.
+    try { anchor_map_proposed = $.uriAnchor.makeAnchorMap(); }
+    catch ( error ) {
+      $.uriAnchor.setAnchor( anchor_map_previous, null, true);
+      return false;
+    }
+    stateMap.anchor_map = anchor_map_proposed;
+    
+  // Zmienne złożone.
+    _s_chat_previous = anchor_map_previous._s_chat;
+    _s_chat_proposed = anchor_map_proposed._s_chat;
+
+    // Rozpoczęcie dostosowywania komponentu czatu, jeśli został zmieniony.
+    if ( !anchor_map_previous || _s_chat_previous !== _s_chat_proposed) {
+      s_chat_proposed = anchor_map_proposed.chat;
+
+      switch ( s_chat_proposed ) {
+        case 'open': 
+        toggleChat( true );
+        break;
+        case 'closed':
+        toggleChat( false );
+        break;
+        default:
+          toggleChat( false );
+          delete anchor_map_proposed.chat;
+          $.uriAnchor.setAnchor( anchor_map_proposed, null, true );
+      }
+    }
+  // Zakończenie dostosowywania komponentu czatu, jeśli został zmieniony.
+
+  return false;
+  };
+  // Zakończenie procedury obsługi zdarzeń /onhashChange/
+
+
+
+
   onClickChat = function ( event ) {
    if ( toggleChat( stateMap.is_chat_retracted ) ) {
      $.uriAnchor.setAnchor({
