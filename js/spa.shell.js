@@ -244,19 +244,15 @@ spa.shell = (function() {
   };
   // Zakończenie procedury obsługi zdarzeń /onhashChange/
 
-
-
-
+    // Rozpoczęcie procedury obsługi zdarzeń /onClickChat/ 
   onClickChat = function ( event ) {
-   if ( toggleChat( stateMap.is_chat_retracted ) ) {
-     $.uriAnchor.setAnchor({
-       chat: ( stateMap.is_chat_retracted ? 'open' : 'closed' )
-     });
-   }
+    changeAnchorPart({
+      chat: ( stateMap.is_chat_retracted ? 'open' : 'closed' )
+    });   
     return false;
-  }
+  };
+    // Zakończenie procedury obsługi zdarzeń /onClickChat/
   // --------ZAKOŃCZENIE SEKCJI PROCEDUR OBŁSUGI ZDARZEŃ-----------------
-
   // --------ROZPOCZĘCIE SEKCJI METOD PUBLICZNYCH------------------------
 
   // Rozpoczęcie metody publicznej /initModule/.
@@ -271,11 +267,23 @@ spa.shell = (function() {
       .attr( 'tytuł', configMap.chat_retracted_title )
       .click( onClickChat );
 
-    // Testowanie przełączania.
-    // setTimeout(function () {toggleChat(true);}, 3000);
-    // setTimeout(function () {toggleChat(false);}, 8000);
+    // Skonfigurowanie wtyczki uriAnchor do stosowania schematu. 
+    $.uriAnchor.configModule({
+      schema_map: configMap.anchor_schema_map
+    });
+
+    // Obsługa zdarzeń zmiany kotwicy URI.
+    // RObi się to po tym, jak wszystkie moduły funkcji zostaną skonfigurowane
+    // i zainicjowane. W przeciwnym razie nie będą one gotowe do obsługi
+    // zdarzenia wyzwalającego, które jest stosowane, aby upewnić się, że kotwica
+    // uznana jest za załadowaną.
+    //
+    $(window)
+      .bind('hashchange', onHashChange )
+      .trigger( 'hashchange'); 
   };
   // Zakończenie metody publicznej /initModule/.
+  
   return { initModule: initModule };
 // --------ZAKOŃCZENIE SEKCJI METOD PUBLICZNYCH------------------------
 }());
